@@ -3,7 +3,11 @@ import { readFile } from "node:fs/promises";
 import { extname, join, normalize } from "node:path";
 const PORT = Number.parseInt(process.env.PORT || "5173", 10);
 const ROOT = process.cwd();
-const contentTypes = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "application/javascript; charset=utf-8" };
+const contentTypes = {
+    ".html": "text/html; charset=utf-8",
+    ".css": "text/css; charset=utf-8",
+    ".js": "application/javascript; charset=utf-8"
+};
 const server = http.createServer(async (request, response) => {
     try {
         const url = new URL(request.url || "/", `http://${request.headers.host}`);

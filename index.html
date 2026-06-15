@@ -3,42 +3,143 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Soroban Guardrail</title>
+    <title>Soroban Guardrail - Contract Safety Scanner</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <main class="shell">
-      <nav class="topbar">
-        <div class="brand-mark">S</div>
-        <strong>Soroban Guardrail</strong>
-      </nav>
-      <section class="hero">
-        <p class="eyebrow">Open-source product infrastructure</p>
-        <h1>Open-source static analysis and deployment readiness checks for Soroban smart contracts.</h1>
-        <p class="lede">A polished starter surface for demos, grants, sprints, and early contributors.</p>
-        <div class="actions">
-          <button id="primaryAction">Create session</button>
-          <button class="secondary" id="secondaryAction">View API surface</button>
-        </div>
-      </section>
-      <section class="grid">
-        <article>
-          <span>01</span>
-          <h2>Client</h2>
-          <p>Responsive TypeScript UI ready for deployment.</p>
-        </article>
-        <article>
-          <span>02</span>
-          <h2>Server</h2>
-          <p>Typed API scaffold with health and session routes.</p>
-        </article>
-        <article>
-          <span>03</span>
-          <h2>Contracts</h2>
-          <p>Protocol scaffold for future on-chain logic.</p>
-        </article>
+    <main class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="#overview" aria-label="Soroban Guardrail home">
+          <span class="brand-mark">SG</span>
+          <span>
+            <strong>Soroban Guardrail</strong>
+            <small>Contract Doctor</small>
+          </span>
+        </a>
+        <nav class="sidebar-nav" aria-label="Product navigation">
+          <a class="active" href="#overview">Overview</a>
+          <a href="#findings">Findings</a>
+          <a href="#rules">Rules</a>
+          <a href="#ci">CI setup</a>
+        </nav>
+      </aside>
+
+      <section class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Soroban static analysis</p>
+            <h1>Scan Soroban contracts before they reach testnet.</h1>
+          </div>
+          <button id="runScanButton">Run demo scan</button>
+        </header>
+
+        <section class="hero-grid" id="overview">
+          <article class="score-card">
+            <div class="score-ring" aria-label="Readiness score">
+              <strong id="scoreValue">82</strong>
+              <span>/100</span>
+            </div>
+            <div>
+              <p class="card-label">Deployment readiness</p>
+              <h2>Review needed before deploy</h2>
+              <p>
+                Guardrail checks auth, events, storage habits, test coverage, panic usage,
+                and release hygiene for Soroban Rust contracts.
+              </p>
+            </div>
+          </article>
+
+          <article class="terminal-card">
+            <div class="terminal-top">
+              <span></span><span></span><span></span>
+              <strong>soroban-guardrail scan</strong>
+            </div>
+            <pre><code id="scanOutput">$ guardrail scan ./contracts
+✓ parsed 4 Rust modules
+✓ loaded 12 Soroban rules
+! 1 critical, 2 high, 4 medium
+→ report saved to guardrail-report.json</code></pre>
+          </article>
+        </section>
+
+        <section class="metric-row" aria-label="Scan metrics">
+          <article><span>Critical</span><strong id="criticalCount">1</strong></article>
+          <article><span>High</span><strong>2</strong></article>
+          <article><span>Medium</span><strong>4</strong></article>
+          <article><span>Passed</span><strong>18</strong></article>
+        </section>
+
+        <section class="main-grid" id="findings">
+          <article class="panel findings-panel">
+            <div class="panel-heading">
+              <p class="eyebrow">Findings</p>
+              <h2>Actionable contract review queue</h2>
+            </div>
+            <button class="finding active" data-finding="auth">
+              <span class="severity critical">Critical</span>
+              <strong>Missing authorization gate</strong>
+              <small>src/lib.rs:42 - admin_set_config</small>
+            </button>
+            <button class="finding" data-finding="events">
+              <span class="severity high">High</span>
+              <strong>No event emitted after state change</strong>
+              <small>src/vault.rs:88 - deposit</small>
+            </button>
+            <button class="finding" data-finding="storage">
+              <span class="severity medium">Medium</span>
+              <strong>Instance storage may grow without bounds</strong>
+              <small>src/state.rs:19 - Positions</small>
+            </button>
+          </article>
+
+          <article class="panel detail-panel">
+            <div class="panel-heading">
+              <p class="eyebrow">Selected rule</p>
+              <h2 id="detailTitle">Missing authorization gate</h2>
+            </div>
+            <p id="detailBody">
+              This function writes contract state but does not require caller authorization.
+              Add `caller.require_auth()` before accepting sensitive input.
+            </p>
+            <div class="code-card">
+              <div class="code-top">Suggested fix</div>
+              <pre><code id="detailCode">pub fn admin_set_config(env: Env, caller: Address, config: Config) {
+    caller.require_auth();
+    env.storage().instance().set(&DataKey::Config, &config);
+}</code></pre>
+            </div>
+          </article>
+        </section>
+
+        <section class="rule-grid" id="rules">
+          <article>
+            <span>AUTH-001</span>
+            <h3>Missing `require_auth`</h3>
+            <p>Flags public state-changing functions without explicit authorization.</p>
+          </article>
+          <article>
+            <span>EVT-002</span>
+            <h3>Silent state changes</h3>
+            <p>Encourages event emission for indexers, dashboards, and auditors.</p>
+          </article>
+          <article>
+            <span>REL-003</span>
+            <h3>Deploy readiness</h3>
+            <p>Checks tests, README, CI, and release configuration before testnet.</p>
+          </article>
+        </section>
+
+        <section class="ci-card" id="ci">
+          <div>
+            <p class="eyebrow">GitHub Action</p>
+            <h2>Block risky Soroban PRs before merge.</h2>
+            <p>Contributors can add rules, report formats, fixtures, docs, and CI integrations in scoped Wave issues.</p>
+          </div>
+          <button class="secondary" id="copyCiButton">Copy CI snippet</button>
+        </section>
       </section>
     </main>
+
     <script type="module" src="scripts/app.js"></script>
   </body>
 </html>
