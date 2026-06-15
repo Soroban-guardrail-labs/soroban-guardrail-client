@@ -3,143 +3,335 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Soroban Guardrail - Contract Safety Scanner</title>
+    <title>Soroban Guardrail - Explorer</title>
+    <!-- Favicon: Using the provided SVG logo colored in warning red -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' fill='none'%3E%3Cpath d='M 128.945 0 C 199.203 0.508 256 57.617 256 127.994 C 256 198.686 198.692 255.994 128 255.994 C 57.308 255.994 0 198.686 0 127.994 C 0 57.617 56.797 0.509 127.054 0 C 87.725 0.506 56 32.544 56 71.994 C 56 111.759 88.236 143.994 128 143.994 C 167.764 143.994 200 111.759 200 71.994 C 200 32.545 168.274 0.506 128.945 0 Z M 128 47.994 C 141.255 47.994 152 58.739 152 71.994 C 152 85.249 141.255 95.994 128 95.994 C 114.745 95.994 104 85.249 104 71.994 C 104 58.739 114.745 47.994 128 47.994 Z' fill='rgb(239, 68, 68)'%3E%3C/path%3E%3C/svg%3E" />
+    
+    <!-- Google Fonts: Manrope (primary) & JetBrains Mono (monospace / headings) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <main class="app-shell">
+      <!-- Sidebar Navigation -->
       <aside class="sidebar">
-        <a class="brand" href="#overview" aria-label="Soroban Guardrail home">
-          <span class="brand-mark">SG</span>
-          <span>
-            <strong>Soroban Guardrail</strong>
-            <small>Contract Doctor</small>
-          </span>
-        </a>
+        <div class="sidebar-header">
+          <a class="brand" href="#overview" aria-label="Soroban Guardrail home">
+            <!-- Provided SVG logo -->
+            <svg class="brand-logo" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 256 256" fill="none">
+              <path d="M 128.945 0 C 199.203 0.508 256 57.617 256 127.994 C 256 198.686 198.692 255.994 128 255.994 C 57.308 255.994 0 198.686 0 127.994 C 0 57.617 56.797 0.509 127.054 0 C 87.725 0.506 56 32.544 56 71.994 C 56 111.759 88.236 143.994 128 143.994 C 167.764 143.994 200 111.759 200 71.994 C 200 32.545 168.274 0.506 128.945 0 Z M 128 47.994 C 141.255 47.994 152 58.739 152 71.994 C 152 85.249 141.255 95.994 128 95.994 C 114.745 95.994 104 85.249 104 71.994 C 104 58.739 114.745 47.994 128 47.994 Z" fill="currentColor"></path>
+            </svg>
+            <div class="brand-text">
+              <strong>GUARDRAIL</strong>
+              <small>Soroban Doc</small>
+            </div>
+          </a>
+        </div>
         <nav class="sidebar-nav" aria-label="Product navigation">
-          <a class="active" href="#overview">Overview</a>
-          <a href="#findings">Findings</a>
-          <a href="#rules">Rules</a>
-          <a href="#ci">CI setup</a>
+          <a class="nav-item active" href="#overview" data-section="overview">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+            Overview
+          </a>
+          <a class="nav-item" href="#findings" data-section="findings">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            Findings
+          </a>
+          <a class="nav-item" href="#rules" data-section="rules">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            Rules List
+          </a>
+          <a class="nav-item" href="#ci" data-section="ci">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+            CI Setup
+          </a>
         </nav>
+        
+        <div class="sidebar-footer">
+          <div class="status-indicator connected">
+            <span class="pulse-dot"></span>
+            <span class="status-label">API Online</span>
+          </div>
+        </div>
       </aside>
 
+      <!-- Main Workspace -->
       <section class="workspace">
         <header class="topbar">
-          <div>
-            <p class="eyebrow">Soroban static analysis</p>
-            <h1>Scan Soroban contracts before they reach testnet.</h1>
+          <div class="explorer-path">
+            <span class="path-root">guardrail</span>
+            <span class="path-separator">/</span>
+            <span class="path-branch">mainnet</span>
+            <span class="path-separator">/</span>
+            <span id="activePathLeaf" class="path-leaf">overview</span>
           </div>
-          <button id="runScanButton">Run demo scan</button>
+          
+          <div class="topbar-actions">
+            <div class="search-container">
+              <svg class="search-icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" id="searchInput" placeholder="Search rules, findings..." aria-label="Search Explorer" />
+            </div>
+            <button id="runScanButton" class="scan-btn">
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" class="btn-icon"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+              Run scan
+            </button>
+          </div>
         </header>
 
-        <section class="hero-grid" id="overview">
-          <article class="score-card">
-            <div class="score-ring" aria-label="Readiness score">
-              <strong id="scoreValue">82</strong>
-              <span>/100</span>
+        <!-- Dynamic Content Sections -->
+        <div class="content-container">
+          
+          <!-- OVERVIEW SECTION -->
+          <div id="overviewSection" class="dashboard-section active">
+            <div class="section-header">
+              <h1>Contract Readiness Summary</h1>
+              <p>Static analyzer scan logs, severity statistics, and deployment vulnerability audits.</p>
             </div>
-            <div>
-              <p class="card-label">Deployment readiness</p>
-              <h2>Review needed before deploy</h2>
-              <p>
-                Guardrail checks auth, events, storage habits, test coverage, panic usage,
-                and release hygiene for Soroban Rust contracts.
-              </p>
-            </div>
-          </article>
 
-          <article class="terminal-card">
-            <div class="terminal-top">
-              <span></span><span></span><span></span>
-              <strong>soroban-guardrail scan</strong>
-            </div>
-            <pre><code id="scanOutput">$ guardrail scan ./contracts
+            <!-- Score / Hero Row -->
+            <div class="hero-grid">
+              <article class="card score-card">
+                <div class="score-container">
+                  <div class="score-ring-wrapper">
+                    <!-- Custom SVG Circular Progress Ring -->
+                    <svg class="score-ring-svg" width="120" height="120" viewBox="0 0 120 120">
+                      <circle class="score-ring-bg" cx="60" cy="60" r="50"></circle>
+                      <circle id="scoreRingProgress" class="score-ring-fg" cx="60" cy="60" r="50" style="stroke-dasharray: 314; stroke-dashoffset: 56.5;"></circle>
+                    </svg>
+                    <div class="score-text">
+                      <strong id="scoreValue">82</strong>
+                      <span>/100</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="score-details">
+                  <p class="card-label">Readiness Score</p>
+                  <h2>Review required before deploy</h2>
+                  <p>
+                    Guardrail verifies authorization gates, event emissions, bounded storage habits, 
+                    and panic coverage for Soroban Rust contracts.
+                  </p>
+                </div>
+              </article>
+
+              <article class="card terminal-card">
+                <div class="terminal-top">
+                  <div class="window-controls">
+                    <span></span><span></span><span></span>
+                  </div>
+                  <strong>guardrail-scanner --output=json</strong>
+                </div>
+                <pre><code id="scanOutput">$ guardrail scan ./contracts
 ✓ parsed 4 Rust modules
 ✓ loaded 12 Soroban rules
 ! 1 critical, 2 high, 4 medium
 → report saved to guardrail-report.json</code></pre>
-          </article>
-        </section>
-
-        <section class="metric-row" aria-label="Scan metrics">
-          <article><span>Critical</span><strong id="criticalCount">1</strong></article>
-          <article><span>High</span><strong>2</strong></article>
-          <article><span>Medium</span><strong>4</strong></article>
-          <article><span>Passed</span><strong>18</strong></article>
-        </section>
-
-        <section class="main-grid" id="findings">
-          <article class="panel findings-panel">
-            <div class="panel-heading">
-              <p class="eyebrow">Findings</p>
-              <h2>Actionable contract review queue</h2>
+              </article>
             </div>
-            <button class="finding active" data-finding="auth">
-              <span class="severity critical">Critical</span>
-              <strong>Missing authorization gate</strong>
-              <small>src/lib.rs:42 - admin_set_config</small>
-            </button>
-            <button class="finding" data-finding="events">
-              <span class="severity high">High</span>
-              <strong>No event emitted after state change</strong>
-              <small>src/vault.rs:88 - deposit</small>
-            </button>
-            <button class="finding" data-finding="storage">
-              <span class="severity medium">Medium</span>
-              <strong>Instance storage may grow without bounds</strong>
-              <small>src/state.rs:19 - Positions</small>
-            </button>
-          </article>
 
-          <article class="panel detail-panel">
-            <div class="panel-heading">
-              <p class="eyebrow">Selected rule</p>
-              <h2 id="detailTitle">Missing authorization gate</h2>
+            <!-- Metrics Quickbar -->
+            <section class="metric-row" aria-label="Scan metrics">
+              <article class="metric-card critical-metric">
+                <div class="metric-label">Critical Issues</div>
+                <div class="metric-val"><strong id="criticalCount">1</strong></div>
+                <div class="metric-indicator">Immediate Action Required</div>
+              </article>
+              <article class="metric-card high-metric">
+                <div class="metric-label">High Severity</div>
+                <div class="metric-val"><strong id="highCount">2</strong></div>
+                <div class="metric-indicator">Fix before Mainnet</div>
+              </article>
+              <article class="metric-card medium-metric">
+                <div class="metric-label">Medium Severity</div>
+                <div class="metric-val"><strong id="mediumCount">4</strong></div>
+                <div class="metric-indicator">Optimizations & Hygiene</div>
+              </article>
+              <article class="metric-card passed-metric">
+                <div class="metric-label">Passed Checks</div>
+                <div class="metric-val"><strong id="passedCount">18</strong></div>
+                <div class="metric-indicator">Rules Complied With</div>
+              </article>
+            </section>
+
+            <!-- Dashboard Charts -->
+            <div class="charts-grid">
+              <article class="card chart-card">
+                <h3>Vulnerability Distribution</h3>
+                <p class="chart-subtitle">Findings cataloged by security weight</p>
+                <div class="chart-wrapper pie-chart-wrapper">
+                  <!-- Custom SVG Donut Chart -->
+                  <svg id="donutChart" viewBox="0 0 200 200" width="100%" height="150">
+                    <!-- Doughnut segments generated by JS -->
+                  </svg>
+                  <div class="chart-legend" id="donutLegend">
+                    <!-- Legend generated by JS -->
+                  </div>
+                </div>
+              </article>
+
+              <article class="card chart-card">
+                <h3>Safety Score History</h3>
+                <p class="chart-subtitle">Analysis results over latest code commits</p>
+                <div class="chart-wrapper area-chart-wrapper">
+                  <!-- Custom SVG Line / Area Chart -->
+                  <svg id="lineChart" viewBox="0 0 500 150" width="100%" height="150">
+                    <defs>
+                      <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#ff3344" stop-opacity="0.3"></stop>
+                        <stop offset="100%" stop-color="#ff3344" stop-opacity="0.0"></stop>
+                      </linearGradient>
+                    </defs>
+                    <!-- Grid and path lines generated dynamically by JS -->
+                  </svg>
+                  <div class="chart-tooltip" id="chartTooltip"></div>
+                </div>
+              </article>
             </div>
-            <p id="detailBody">
-              This function writes contract state but does not require caller authorization.
-              Add `caller.require_auth()` before accepting sensitive input.
-            </p>
-            <div class="code-card">
-              <div class="code-top">Suggested fix</div>
-              <pre><code id="detailCode">pub fn admin_set_config(env: Env, caller: Address, config: Config) {
-    caller.require_auth();
-    env.storage().instance().set(&DataKey::Config, &config);
-}</code></pre>
-            </div>
-          </article>
-        </section>
-
-        <section class="rule-grid" id="rules">
-          <article>
-            <span>AUTH-001</span>
-            <h3>Missing `require_auth`</h3>
-            <p>Flags public state-changing functions without explicit authorization.</p>
-          </article>
-          <article>
-            <span>EVT-002</span>
-            <h3>Silent state changes</h3>
-            <p>Encourages event emission for indexers, dashboards, and auditors.</p>
-          </article>
-          <article>
-            <span>REL-003</span>
-            <h3>Deploy readiness</h3>
-            <p>Checks tests, README, CI, and release configuration before testnet.</p>
-          </article>
-        </section>
-
-        <section class="ci-card" id="ci">
-          <div>
-            <p class="eyebrow">GitHub Action</p>
-            <h2>Block risky Soroban PRs before merge.</h2>
-            <p>Contributors can add rules, report formats, fixtures, docs, and CI integrations in scoped Wave issues.</p>
           </div>
-          <button class="secondary" id="copyCiButton">Copy CI snippet</button>
-        </section>
+
+          <!-- FINDINGS / CODE EXPLORER SECTION -->
+          <div id="findingsSection" class="dashboard-section">
+            <div class="section-header">
+              <h1>Actionable Scan Findings</h1>
+              <p>Debug contract bugs, trace security exceptions, and evaluate inline remedies.</p>
+            </div>
+
+            <div class="main-grid">
+              <!-- Left: Queue of findings -->
+              <article class="card panel findings-panel">
+                <div class="panel-heading">
+                  <h2>Vulnerability Feed</h2>
+                  <p>Select a finding to inspect the contract line annotations.</p>
+                </div>
+                <div class="findings-list" id="findingsList">
+                  <button class="finding active" data-finding="auth">
+                    <div class="finding-header">
+                      <span class="severity critical">Critical</span>
+                      <span class="finding-id">AUTH-001</span>
+                    </div>
+                    <strong>Missing authorization gate</strong>
+                    <small>src/lib.rs:42 - admin_set_config</small>
+                  </button>
+                  <button class="finding" data-finding="events">
+                    <div class="finding-header">
+                      <span class="severity high">High</span>
+                      <span class="finding-id">EVT-002</span>
+                    </div>
+                    <strong>No event emitted after state change</strong>
+                    <small>src/vault.rs:88 - deposit</small>
+                  </button>
+                  <button class="finding" data-finding="storage">
+                    <div class="finding-header">
+                      <span class="severity medium">Medium</span>
+                      <span class="finding-id">STO-003</span>
+                    </div>
+                    <strong>Instance storage may grow without bounds</strong>
+                    <small>src/state.rs:19 - Positions</small>
+                  </button>
+                </div>
+              </article>
+
+              <!-- Right: Code Explorer Panel -->
+              <article class="card panel code-explorer-panel">
+                <div class="explorer-tab-header">
+                  <div class="explorer-tab active" id="activeFileTab">
+                    <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" class="file-icon"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                    <span id="activeFileName">src/lib.rs</span>
+                  </div>
+                </div>
+                
+                <div class="code-viewport">
+                  <!-- The code grid: line numbers on the left, code blocks on the right -->
+                  <div class="code-editor-grid" id="codeEditorGrid">
+                    <!-- Lines and warning annotations injected dynamically by JS -->
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <!-- RULES SECTION -->
+          <div id="rulesSection" class="dashboard-section">
+            <div class="section-header">
+              <h1>Soroban Rule Register</h1>
+              <p>The standard list of safety assertions compiled for Rust contracts deployed on the Soroban network.</p>
+            </div>
+
+            <div class="rule-grid" id="rulesGrid">
+              <article class="card rule-card">
+                <div class="rule-header">
+                  <span class="rule-id">AUTH-001</span>
+                  <span class="rule-badge critical-badge">Critical</span>
+                </div>
+                <h3>Missing `require_auth`</h3>
+                <p>Flags public state-changing functions that do not mandate explicit caller validation.</p>
+                <div class="rule-footer">Vulnerability Class: Authorization</div>
+              </article>
+              
+              <article class="card rule-card">
+                <div class="rule-header">
+                  <span class="rule-id">EVT-002</span>
+                  <span class="rule-badge high-badge">High</span>
+                </div>
+                <h3>Silent state changes</h3>
+                <p>Ensures event logging exists for mutations, vital for indexing, off-chain tracing, and auditing.</p>
+                <div class="rule-footer">Vulnerability Class: Observability</div>
+              </article>
+
+              <article class="card rule-card">
+                <div class="rule-header">
+                  <span class="rule-id">STO-003</span>
+                  <span class="rule-badge medium-badge">Medium</span>
+                </div>
+                <h3>Unbounded storage</h3>
+                <p>Detects persistent maps written directly to instance state lacking clear lifecycle caps.</p>
+                <div class="rule-footer">Vulnerability Class: Gas Optimization</div>
+              </article>
+            </div>
+          </div>
+
+          <!-- CI SETUP SECTION -->
+          <div id="ciSection" class="dashboard-section">
+            <div class="section-header">
+              <h1>CI Setup & Automations</h1>
+              <p>Prevent security anomalies in your pull requests before merging into staging branches.</p>
+            </div>
+
+            <article class="card ci-card">
+              <div class="ci-info">
+                <div class="ci-icon-badge">
+                  <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                </div>
+                <h2>Block vulnerable Soroban PRs</h2>
+                <p>Include Soroban Guardrail scan in your GitHub Actions workflow. Returns status code 1 on new critical or high issues to assert high-integrity merges.</p>
+              </div>
+              <div class="ci-code-block">
+                <div class="ci-code-header">
+                  <span>.github/workflows/guardrail.yml</span>
+                  <button class="secondary copy-btn" id="copyCiButton">Copy CI snippet</button>
+                </div>
+                <pre><code>name: Soroban Guardrail
+on: [pull_request]
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npx soroban-guardrail scan ./contracts --format github</code></pre>
+              </div>
+            </article>
+          </div>
+
+        </div>
       </section>
     </main>
 
+    <!-- App Logic Module (compiled from src/app.ts) -->
     <script type="module" src="scripts/app.js"></script>
   </body>
 </html>
